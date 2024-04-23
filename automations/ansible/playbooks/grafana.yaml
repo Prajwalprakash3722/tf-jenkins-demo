@@ -1,0 +1,17 @@
+---
+- hosts: grafana
+  become: yes
+  become_user: root
+  tasks:
+    - name: Install Grafana package
+      apt:
+        name: grafana
+        state: present
+      tags: [grafana]
+
+    - name: Start Grafana service
+      systemd:
+        name: grafana-server
+        state: started
+        enabled: yes
+      tags: [grafana]
