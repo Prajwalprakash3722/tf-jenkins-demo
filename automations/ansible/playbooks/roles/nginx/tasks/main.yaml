@@ -7,3 +7,14 @@
   systemd:
     state: started
     name: nginx
+- name: copy the custom conf file
+  template:
+    src: templates/nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 0644
+- name: restart nginx
+  systemd:
+    state: restarted
+    name: nginx

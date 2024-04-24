@@ -45,4 +45,12 @@
 [OUTPUT]
     name   stdout
     alias  nginx_logs
+
+[OUTPUT]
+    Name  es
     match  nginx.access
+    Host  192.168.1.4
+    Port  9200
+    Index nginx-access
+    Type  _doc
+    Generate_ID On
