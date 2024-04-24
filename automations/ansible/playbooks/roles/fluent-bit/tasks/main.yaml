@@ -1,23 +1,30 @@
 ---
+- name: Check if Fluent Bit is installed
+  shell: dpkg-query -l fluent-bit
+  register: fluentbit_check
+  ignore_errors: yes
+
 - name: Add Fluent Bit GPG key
   shell: curl https://packages.fluentbit.io/fluentbit.key | gpg --dearmor > /usr/share/keyrings/fluentbit-keyring.gpg
   args:
     executable: /bin/bash
+  when: fluentbit_check.rc != 0
 
 - name: Update sources list with Fluent Bit repository
   lineinfile:
     path: /etc/apt/sources.list
     line: "deb [signed-by=/usr/share/keyrings/fluentbit-keyring.gpg] https://packages.fluentbit.io/ubuntu/{{ fluentbit_codename }} {{ fluentbit_codename }} main"
     insertafter: EOF
-
+  when: fluentbit_check.rc != 0
 - name: Update apt repository database
   apt:
     update_cache: yes
-
+  when: fluentbit_check.rc != 0
 - name: Install Fluent Bit
   apt:
     name: fluent-bit
     state: present
+  when: fluentbit_check.rc != 0
 
 - name: install unit file to systemd
   template:
@@ -26,9 +33,11 @@
     owner: root
     group: root
     mode: 0644
+  when: fluentbit_check.rc != 0
 
 - name: Start Fluent Bit service
   service:
     name: fluent-bit
     state: started
     enabled: yes
+  when: fluentbit_check.rc != 0
