@@ -15,7 +15,7 @@ provider "multipass" {
 #   name           = "elasticsearch"
 #   cloudinit_file = "${path.module}/user_data.cfg"
 #   cpus           = 1
-#   image          = "jammy"
+#   image          = "focal"
 #   disk           = "10Gib"
 #   memory         = "2Gib"
 # }

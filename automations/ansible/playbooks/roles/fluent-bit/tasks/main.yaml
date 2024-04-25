@@ -16,6 +16,7 @@
     line: "deb [signed-by=/usr/share/keyrings/fluentbit-keyring.gpg] https://packages.fluentbit.io/ubuntu/{{ fluentbit_codename }} {{ fluentbit_codename }} main"
     insertafter: EOF
   when: fluentbit_check.rc != 0
+  
 - name: Update apt repository database
   apt:
     update_cache: yes
@@ -33,7 +34,7 @@
     owner: root
     group: root
     mode: 0644
-  when: fluentbit_check.rc != 0
+  # when: fluentbit_check.rc != 0
 
 - name: Start Fluent Bit service
   service:
@@ -41,3 +42,10 @@
     state: started
     enabled: yes
   when: fluentbit_check.rc != 0
+
+- name: Restart Fluent Bit service if already present
+  service:
+    name: fluent-bit
+    state: restarted
+    enabled: yes
+  # when: fluentbit_check.rc = 0

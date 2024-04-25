@@ -1,18 +1,32 @@
 datasources:
--  access: 'proxy'
-   editable: true
-   is_default: true
-   name: 'prometheus'
-   org_id: 1
-   type: 'prometheus'
-   url: 'http://prometheus:9090'
-   version: 1
--  name: Loki
-   type: loki
-   access: proxy
-   orgId: 1
-   url: http://loki:3100
-   basicAuth: false
-   isDefault: false
-   version: 1
-   editable: false
+  - name: prometheus
+    type: prometheus
+    access: proxy
+    editable: true
+    is_default: true
+    org_id: 1
+    url: http://prometheus:9090
+    version: 1
+
+  - name: Loki
+    type: loki
+    access: proxy
+    editable: false
+    is_default: false
+    org_id: 1
+    url: http://loki:3100
+    basicAuth: false
+    version: 1
+
+  - name: Elastic
+    type: elasticsearch
+    access: proxy
+    editable: true
+    is_default: false
+    org_id: 1
+    url: http://elasticsearch:9200
+    jsonData:
+      index: 'nginx-access' 
+      interval: Daily
+      timeField: '@timestamp'
+    version: 1
