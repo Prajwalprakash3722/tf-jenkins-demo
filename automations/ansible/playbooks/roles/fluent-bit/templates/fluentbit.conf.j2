@@ -54,3 +54,9 @@
     Index nginx-access
     Type  _doc
     Generate_ID On
+
+[OUTPUT]
+    name   loki
+    match  nginx.access
+    host   192.168.1.4
+    labels instance={{ hostname }}
