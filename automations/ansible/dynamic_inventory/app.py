@@ -2,8 +2,8 @@
 import subprocess
 import json
 
-# runs multipass list --format=json, and returns the std out result
 def get_multipass_instances():
+    """runs `multipass list --format=json`, and returns the std out result"""
     try:
         result = subprocess.run(["multipass", "list", "--format=json"], capture_output=True, text=True)
         result.check_returncode()
@@ -14,24 +14,17 @@ def get_multipass_instances():
     
     return instances["list"]
 
-# we are constructing the hosts dynamically with proper groups defined, all the instances named node-* will be under nodes group and the remaning shall have their group name same as their instance name
 def format_inventory(instances):
+    """constructs the hosts dynamically with proper groups defined, all the instances named node-* will be under nodes group and the remaning shall have their group name same as their instance name"""
     inventory = {
+        # mandatory for ansible to discover the vms
         "_meta": {
             "hostvars": {}
         },
+        # logically grouping the vms into groups for automation
         "nodes": {
             "hosts": []
         },
-        "grafana":{
-            "hosts":[]
-        },
-        "prometheus":{
-            "hosts":[]
-        },
-        "elasticsearch":{
-            "hosts":[]
-        }
     }
 
     for instance in instances:
