@@ -1,17 +1,97 @@
 ---
-- hosts: grafana
+- name: Install Grafana and configure Prometheus data source
+  hosts: grafana
+  remote_user: ubuntu
+  gather_facts: yes
   become: yes
-  become_user: root
+  vars:
+    grafana_password: admin
+    dashboard_files:
+      - url: "https://raw.githubusercontent.com/Prajwalprakash3722/dashboards/master/nginx.json"
+        dest: "/var/lib/grafana/dashboards/nginx.json"
+      - url: "https://raw.githubusercontent.com/Prajwalprakash3722/dashboards/master/nginx-metrics.json"
+        dest: "/var/lib/grafana/dashboards/nginx-monitoring.json"
+      - url: "https://raw.githubusercontent.com/Prajwalprakash3722/dashboards/master/system.json"
+        dest: "/var/lib/grafana/dashboards/system.json"
+
   tasks:
-    - name: Install Grafana package
+    - name: Install necessary packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apt-transport-https
+
+    - name: Add Grafana GPG key
+      apt_key:
+        url: https://packages.grafana.com/gpg.key
+        state: present
+
+    - name: Add Grafana repository
+      apt_repository:
+        repo: deb https://packages.grafana.com/oss/deb stable main
+        state: present
+        update_cache: yes
+
+    - name: Install Grafana
       apt:
         name: grafana
         state: present
-      tags: [grafana]
 
-    - name: Start Grafana service
-      systemd:
+    - name: Enable and start Grafana service
+      service:
         name: grafana-server
-        state: started
         enabled: yes
-      tags: [grafana]
+        state: started
+    - name: Wait for Grafana to be reachable
+      wait_for:
+        delay: 5
+        timeout: 15  
+        port: 3000
+        host: localhost
+      register: grafana_reachable
+ 
+    - name: Get Prometheus IP address from hostvars
+      set_fact:
+        prometheus_ip: "{{ hostvars['prometheus']['ansible_host'] }}"
+        loki_ip: "{{ hostvars['loki']['ansible_host'] }}"
+    - name: Configure Prometheus data source in Grafana
+      community.grafana.grafana_datasource:
+        name: prometheus
+        ds_type: prometheus
+        ds_url: "http://{{ prometheus_ip }}:9090"
+        access: proxy
+        tls_skip_verify: true
+        url: http://localhost:3000
+        is_default: false
+
+    - name: Configure Loki data source in Grafana
+      community.grafana.grafana_datasource:
+        name: loki
+        ds_type: "loki"
+        ds_url: "http://{{ loki_ip }}:3100"
+        access: proxy
+        tls_skip_verify: true
+        url: http://localhost:3000
+        is_default: false
+
+    - name: Ensure the Grafana dashboard directory exists
+      file:
+        path: "/var/lib/grafana/dashboards"
+        state: directory
+
+    - name: Download dashboard files
+      get_url:
+        url: "{{ item.url }}"
+        dest: "{{ item.dest }}"
+      loop: "{{ dashboard_files }}"
+
+    - name: Import Grafana dashboards
+      community.grafana.grafana_dashboard:
+        grafana_url: http://localhost:3000
+        state: present
+        commit_message: Updated by Ansible
+        overwrite: true
+        path: "{{ item.dest }}"
+        validate_certs: false
+      loop: "{{ dashboard_files }}"

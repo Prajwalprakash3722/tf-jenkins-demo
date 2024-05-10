@@ -1,0 +1,30 @@
+---
+- name: Install & Configure Prometheus
+  hosts: prometheus
+  remote_user: ubuntu
+  gather_facts: yes
+  become: yes
+  roles:
+    - prometheus.prometheus.prometheus
+  vars:
+    prometheus_version: "2.51.2"
+    prometheus_global:
+      evaluation_interval: "30s"
+      scrape_interval: "90s"
+      scrape_timeout: "30s"
+    prometheus_agent_mode: false
+    prometheus_config_flags_extra:
+      web.enable-remote-write-receiver: true
+  tasks:
+    - name: Copy Prometheus systemd unit file with remote write receiver enabled
+      template:
+        src: prometheus.service.j2
+        dest: /etc/systemd/system/prometheus.service
+    - name: Reload systemd daemon
+      systemd:
+        daemon_reload: yes
+
+    - name: Restart Prometheus service
+      systemd:
+        name: prometheus
+        state: restarted

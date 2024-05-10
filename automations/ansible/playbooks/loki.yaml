@@ -1,0 +1,10 @@
+---
+- name: Setup Loki as a service in Linux
+  hosts: loki
+  become: yes
+  gather_facts: yes
+  remote_user: ubuntu
+  vars:
+    loki_version: "2.9.8" 
+  roles:
+    - loki

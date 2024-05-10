@@ -6,7 +6,10 @@ folder="/Users/prajwal3.intern/Desktop/PP/workspace/nginx_log_analyzer/scripts"
 pushd $folder
 if ./create_infra.sh && \
    ./parse_ip.sh && \
-   ./install.sh nginx-fluentbit
+   ./install.sh nginx-fluentbit && \
+   ./install.sh prometheus && \
+    ./install.sh grafana && \
+    ./install.sh loki
    then
     echo "Installation completed successfully."
 else

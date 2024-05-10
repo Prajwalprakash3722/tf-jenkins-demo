@@ -23,7 +23,7 @@
     name            tail
     path            /var/log/nginx/*.log
     tag             nginx.access
-    mem_buf_limit   5MB
+    mem_buf_limit   8MB
     skip_long_lines On
     rotate_wait     30
     ignore_older    1h
@@ -40,7 +40,7 @@
     name        prometheus_remote_write
     alias       output_prometheus
     match       node_metrics
-    host        192.168.1.3
+    host        {{ hostvars['prometheus']['ipv4'][0] }}
     uri         /api/v1/write
     port        9090
     tls         off
@@ -48,25 +48,11 @@
     add_label   instance {{ hostname }}
     add_label   job system-monitoring
 
-# Output to STDOUT for Nginx access logs (temp)
-[OUTPUT]
-    name   stdout
-    alias  nginx_logs
-
-[OUTPUT]
-    Name  es
-    match  nginx.access
-    Host  192.168.1.3
-    Port  9200
-    Index nginx-access
-    Type  _doc
-    Generate_ID On
-
 [OUTPUT]
     name        prometheus_remote_write
     Match       nginx.metrics
     alias       metrics_output_prometheus
-    host        192.168.1.3
+    host        {{ hostvars['prometheus']['ipv4'][0] }}
     uri         /api/v1/write
     port        9090
     tls         off
@@ -77,11 +63,5 @@
 [OUTPUT]
     name   loki
     match  nginx.access
-    host   192.168.1.3
+    host   {{ hostvars['loki']['ipv4'][0] }}
     labels instance={{ hostname }}
-
-[OUTPUT]
-    name            prometheus_exporter
-    match           node_metrics
-    host            0.0.0.0
-    port            2021

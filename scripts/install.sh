@@ -14,11 +14,11 @@ case $1 in
     prometheus)
         file="prometheus.yaml"
         ;;
-    es)
-        file="elasticsearch.yaml"
+    loki)
+        file="loki.yaml"
         ;;
     *)
-        echo "Invalid option: $1, avaliable options are (nginx-fluentbit,grafana,prometheus,es)"
+        echo "Invalid option: $1, avaliable options are (nginx-fluentbit,grafana,prometheus,loki)"
         exit 1
         ;;
 esac

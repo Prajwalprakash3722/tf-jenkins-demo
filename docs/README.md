@@ -25,8 +25,8 @@
 - Infrastructure Provisioning: Terraform provisions instances on Multipass according to defined specifications.
 - Software Installation: Ansible automates the installation of Node Exporter, FluentBit, Prometheus, Loki, and Grafana on the provisioned instances.
 - Configuration: Ansible ensures proper configuration of all software tools for seamless operation.
-- Metrics Collection: Node Exporter collects system metrics and sends them to Prometheus for storage and querying.
-- Logs Collection: FluentBit collects Nginx logs and forwards them to Loki for storage and querying.
+- Metrics Collection: Node Exporter collects system metrics.
+- Logs Collection: FluentBit collects Metrics & Nginx logs and forwards them to Loki for storage and querying.
 - Visualization: Grafana provides intuitive dashboards for visualizing both system metrics and Nginx logs.
 
 ## Usage

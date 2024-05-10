@@ -11,32 +11,32 @@ provider "multipass" {
   alias = "nginx_logging_analysis"
 }
 
-# resource "multipass_instance" "loki" {
-#   name           = "loki"
-#   cloudinit_file = "${path.module}/user_data.cfg"
-#   cpus           = 1
-#   image          = "jammy"
-#   disk           = "10Gib"
-#   memory         = "2Gib"
-# }
+resource "multipass_instance" "loki" {
+  name           = "loki"
+  cloudinit_file = "${path.module}/user_data.cfg"
+  cpus           = 4 
+  image          = "lts"
+  disk           = "10Gib"
+  memory         = "2Gib"
+}
 
-# resource "multipass_instance" "prometheus" {
-#   name           = "prometheus"
-#   cloudinit_file = "${path.module}/user_data.cfg"
-#   cpus           = 1
-#   image          = "jammy"
-#   disk           = "10Gib"
-#   memory         = "2Gib"
-# }
+resource "multipass_instance" "prometheus" {
+  name           = "prometheus"
+  cloudinit_file = "${path.module}/user_data.cfg"
+  cpus           = 2
+  image          = "jammy"
+  disk           = "10Gib"
+  memory         = "2Gib"
+}
 
-# resource "multipass_instance" "grafana" {
-#   name           = "grafana"
-#   cloudinit_file = "${path.module}/user_data.cfg"
-#   cpus           = 1
-#   image          = "jammy"
-#   disk           = "10Gib"
-#   memory         = "2Gib"
-# }
+resource "multipass_instance" "grafana" {
+  name           = "grafana"
+  cloudinit_file = "${path.module}/user_data.cfg"
+  cpus           = 1
+  image          = "jammy"
+  disk           = "10Gib"
+  memory         = "2Gib"
+}
 resource "multipass_instance" "node" {
   count          = var.no_of_nodes
   name           = "node-${count.index + 1}"

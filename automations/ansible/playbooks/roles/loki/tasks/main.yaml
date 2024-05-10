@@ -1,0 +1,53 @@
+---
+- name: Create directory for Loki
+  file:
+    path: /opt/loki
+    state: directory
+
+- name: Download Loki package
+  get_url:
+  # https://github.com/grafana/loki/releases/download/v2.9.8/loki_2.9.8_arm64.deb
+    url: "https://github.com/grafana/loki/releases/download/v{{ loki_version }}/loki_{{ loki_version }}_arm64.deb"
+    dest: /opt/loki/loki.deb
+    timeout: 60
+
+- name: Install Loki package
+  apt:
+    deb: /opt/loki/loki.deb
+    state: present
+
+# - name: Set execute permission for Loki binary
+#   file:
+#     path: /opt/loki/loki
+#     mode: "+x"
+
+# - name: Create symbolic link to Loki binary
+#   file:
+#     src: /opt/loki/loki
+#     dest: /usr/local/bin/loki
+#     state: link
+
+- name: Download Loki configuration file
+  get_url:
+    url: "https://raw.githubusercontent.com/grafana/loki/v{{ loki_version }}/cmd/loki/loki-local-config.yaml"
+    dest: /opt/loki/loki-local-config.yaml
+
+- name: Verify Loki installation
+  command: loki -version
+
+- name: Create systemd unit file for Loki
+  template:
+    src: loki.service.j2
+    dest: /etc/systemd/system/loki.service
+
+- name: Start Loki service and force systemd reload
+  systemd:
+    name: loki
+    state: started
+    daemon_reload: yes
+
+
+- name: Verify Loki service status
+  systemd:
+    name: loki
+    state: restarted
