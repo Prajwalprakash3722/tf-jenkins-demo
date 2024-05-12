@@ -16,17 +16,6 @@
     deb: /opt/loki/loki.deb
     state: present
 
-# - name: Set execute permission for Loki binary
-#   file:
-#     path: /opt/loki/loki
-#     mode: "+x"
-
-# - name: Create symbolic link to Loki binary
-#   file:
-#     src: /opt/loki/loki
-#     dest: /usr/local/bin/loki
-#     state: link
-
 - name: Download Loki configuration file
   get_url:
     url: "https://raw.githubusercontent.com/grafana/loki/v{{ loki_version }}/cmd/loki/loki-local-config.yaml"

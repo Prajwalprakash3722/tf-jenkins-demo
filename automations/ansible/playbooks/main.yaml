@@ -1,0 +1,5 @@
+---
+- import_playbook: prometheus.yaml
+- import_playbook: loki.yaml
+- import_playbook: grafana.yaml
+- import_playbook: nginx-fluentbit.yaml
