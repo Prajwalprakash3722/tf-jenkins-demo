@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "local" {
-    path = "/Users/prajwal3.intern/Desktop/PP/workspace/terraform.terraform.tfstate"
+    path = "/Users/prajwal3.intern/Desktop/PP/workspace/terraform/terraform.tfstate"
   }
 }
 
