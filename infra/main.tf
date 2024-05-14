@@ -5,6 +5,9 @@ terraform {
       version = "1.4.2"
     }
   }
+  backend "local" {
+    path = "/Users/prajwal3.intern/Desktop/PP/workspace/terraform.terraform.tfstate"
+  }
 }
 
 provider "multipass" {
@@ -37,6 +40,7 @@ resource "multipass_instance" "grafana" {
   disk           = "10Gib"
   memory         = "2Gib"
 }
+
 resource "multipass_instance" "node" {
   count          = var.no_of_nodes
   name           = "node-${count.index + 1}"
