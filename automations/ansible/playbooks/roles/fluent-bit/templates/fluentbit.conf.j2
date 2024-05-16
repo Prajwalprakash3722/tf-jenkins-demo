@@ -22,12 +22,22 @@
 [INPUT]
     name            tail
     path            /var/log/nginx/*.log
-    tag             nginx.access
+    tag             nginx.log
     mem_buf_limit   8MB
     skip_long_lines On
     rotate_wait     30
     ignore_older    1h
     parser          json
+    Path_Key        file
+
+[INPUT]
+    name            tail
+    path            /var/log/*.log
+    tag             system.log
+    mem_buf_limit   8MB
+    skip_long_lines On
+    rotate_wait     30
+    ignore_older    1h
     Path_Key        file
 
 [INPUT]
@@ -62,6 +72,6 @@
 
 [OUTPUT]
     name   loki
-    match  nginx.access
+    match  *.log
     host   {{ hostvars['loki']['ipv4'][0] }}
     labels instance={{ hostname }}
