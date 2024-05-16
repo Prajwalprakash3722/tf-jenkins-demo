@@ -6,7 +6,7 @@
   become: yes
   vars:
     fluentbit_codename: "{{ ansible_distribution_release }}"
-    hostname:  "{{inventory_hostname }}"
+    hostname:  "{{ inventory_hostname }}"
   roles:
   - nginx
   - fluent-bit
