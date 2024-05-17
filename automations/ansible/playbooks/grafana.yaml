@@ -13,7 +13,8 @@
         dest: "/var/lib/grafana/dashboards/nginx-monitoring.json"
       - url: "https://raw.githubusercontent.com/Prajwalprakash3722/dashboards/master/system.json"
         dest: "/var/lib/grafana/dashboards/system.json"
-
+      - url: "https://raw.githubusercontent.com/Prajwalprakash3722/dashboards/master/syslogs.json"
+        dest: "/var/lib/grafana/dashboards/syslogs.json"
   tasks:
     - name: Install necessary packages
       apt:
