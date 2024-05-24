@@ -1,6 +1,6 @@
 variable "no_of_nodes" {
   type        = number
-  default     = 2
+  default     = 4
   description = "Total Number of Instances to be provisioned"
 }
 
